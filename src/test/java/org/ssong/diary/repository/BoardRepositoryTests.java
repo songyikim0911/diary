@@ -22,6 +22,9 @@ public class BoardRepositoryTests {
    @Autowired
    private ModelMapper modelMapper;
 
+
+
+
     @Test
     public void testSearch1(){
 

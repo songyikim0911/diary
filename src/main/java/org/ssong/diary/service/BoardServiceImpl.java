@@ -15,6 +15,7 @@ import org.ssong.diary.repository.BoardRepository;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,6 +59,42 @@ public class BoardServiceImpl implements BoardService {
 
         return new PageResponseDTO<>(pageRequestDTO, (int)totalCount, dtoList);
 
+
+    }
+
+    @Override
+    public BoardDTO read(Long bno) {
+
+        Optional<Board> result = boardRepository.findById(bno);
+
+        if(result.isEmpty()){
+            throw new RuntimeException("NOT FOUND");
+        }
+
+       return modelMapper.map(result.get(), BoardDTO.class);
+
+    }
+
+    @Override
+    public void modify(BoardDTO boardDTO) {
+
+        Optional<Board> result = boardRepository.findById(boardDTO.getBno());
+
+        if(result.isEmpty()){
+            throw new RuntimeException("NOT FOUND");
+        }
+
+        Board board = result.get();
+        board.change(boardDTO.getTitle(), boardDTO.getContent());
+
+        boardRepository.save(board);
+
+    }
+
+    @Override
+    public void remove(Long bno) {
+
+        boardRepository.deleteById(bno);
 
     }
 

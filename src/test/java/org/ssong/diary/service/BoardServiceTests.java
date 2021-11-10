@@ -16,6 +16,26 @@ public class BoardServiceTests {
     private BoardService boardService;
 
     @Test
+    public void testModify(){
+
+        BoardDTO boardDTO = BoardDTO.builder()
+                .bno(200L)
+                .content("MODIFY")
+                .title("modify")
+                .build();
+
+        boardService.modify(boardDTO);
+
+    }
+
+
+    @Test
+    public void testDelete(){
+        Long bno = 199L;
+        boardService.remove(bno);
+    }
+
+    @Test
     public void testRegister(){
 
         IntStream.rangeClosed(1,200).forEach(i->{
