@@ -12,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.ssong.diary.dto.BoardDTO;
 import org.ssong.diary.entity.Board;
 
+import java.util.Arrays;
+
 @SpringBootTest
 @Log4j2
 public class BoardRepositoryTests {
@@ -23,7 +25,19 @@ public class BoardRepositoryTests {
    private ModelMapper modelMapper;
 
 
+   @Test
+   public void testEx1() {
 
+       Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
+       Page<Object[]> result = boardRepository.ex1(pageable);
+       log.info(result);
+
+       result.get().forEach(element -> {
+           Object[] arr = (Object[]) element;
+           log.info(Arrays.toString(arr));
+
+       });
+   }
 
     @Test
     public void testSearch1(){
