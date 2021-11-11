@@ -23,6 +23,13 @@ public class ReplyRepositoryTests {
 
 
     @Test
+    public void testRead(){
+        Long rno=777L;
+        Reply reply = replyRepository.findById(rno).get();
+        log.info(reply);
+    }
+
+    @Test
     public void testByBno(){
         Long bno = 200L;
         List<Reply> replyList = replyRepository.findReplyByBoard_BnoOrderByRno(bno);

@@ -26,6 +26,11 @@ public class BoardRepositoryTests {
 
 
    @Test
+   public void testSearchwithReply(){
+       boardRepository.searchWithReplyCount();
+   }
+
+   @Test
    public void testEx1() {
 
        Pageable pageable = PageRequest.of(0, 10, Sort.by("bno").descending());

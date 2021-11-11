@@ -1,12 +1,14 @@
 package org.ssong.diary.repository.search;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.ssong.diary.entity.Board;
 import org.ssong.diary.entity.QBoard;
+import org.ssong.diary.entity.QReply;
 
 import java.util.List;
 
@@ -63,5 +65,28 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
 
         return new PageImpl<>(boardList, pageable, totalCount);
 
+    }
+
+    @Override
+    public Page<Object[]> searchWithReplyCount() {
+
+        QBoard qBoard = QBoard.board;
+        QReply qReply = QReply.reply;
+
+        JPQLQuery<Board> query = from(qBoard);
+
+        query.leftJoin(qReply).on(qReply.board.eq(qBoard));
+
+        query.where(qBoard.bno.eq(200L));
+
+        query.groupBy(qBoard);
+
+        JPQLQuery<Tuple> selectQuery = query.select(qBoard.bno, qBoard.title, qBoard.writer,
+                qBoard.regDate, qReply.count());
+
+        log.info(selectQuery);
+
+
+        return null;
     }
 }
