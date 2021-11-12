@@ -27,7 +27,17 @@ public class BoardRepositoryTests {
 
    @Test
    public void testSearchwithReply(){
-       boardRepository.searchWithReplyCount();
+
+       char[] typeArr = {'T'};
+       String keyword = "10";
+
+       Pageable pageable = PageRequest.of(0,10,Sort.by("bno").descending());
+
+       Page<Object[]> result = boardRepository.searchWithReplyCount(typeArr, keyword, pageable);
+
+       result.get().forEach(arr->
+               log.info(Arrays.toString(arr)));
+
    }
 
    @Test

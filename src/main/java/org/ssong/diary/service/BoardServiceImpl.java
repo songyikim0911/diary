@@ -8,12 +8,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.ssong.diary.dto.BoardDTO;
+import org.ssong.diary.dto.BoardListDTO;
 import org.ssong.diary.dto.PageRequestDTO;
 import org.ssong.diary.dto.PageResponseDTO;
 import org.ssong.diary.entity.Board;
 import org.ssong.diary.repository.BoardRepository;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,6 +62,39 @@ public class BoardServiceImpl implements BoardService {
         return new PageResponseDTO<>(pageRequestDTO, (int)totalCount, dtoList);
 
 
+    }
+
+    @Override
+    public PageResponseDTO<BoardListDTO> getListWithReplyCount(PageRequestDTO pageRequestDTO) {
+
+
+        char[] typeArr = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+
+        Pageable pageable = PageRequest.of(pageRequestDTO.getPage()-1,
+                pageRequestDTO.getSize(),
+                Sort.by("bno").descending());
+
+
+        Page<Object[]> result = boardRepository.searchWithReplyCount(typeArr, keyword, pageable);
+
+        List<BoardListDTO> dtoList = result.get().map(objects -> {
+
+            BoardListDTO listDTO = BoardListDTO.builder()
+                    .bno((Long)objects[0])
+                    .title((String)objects[1])
+                    .writer((String)objects[2])
+                    .regDate((LocalDateTime)objects[3])
+                    .replyCount((Long)objects[4])
+                    .build();
+
+            return listDTO;
+
+        }).collect(Collectors.toList());
+
+
+
+        return new PageResponseDTO<>(pageRequestDTO, (int)result.getTotalElements(), dtoList);
     }
 
     @Override

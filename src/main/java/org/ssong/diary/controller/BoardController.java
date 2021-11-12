@@ -23,8 +23,8 @@ public class BoardController {
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model){
 
-        model.addAttribute("responseDTO",boardService.getList(pageRequestDTO));
-
+       // model.addAttribute("responseDTO",boardService.getList(pageRequestDTO));
+        model.addAttribute("responseDTO", boardService.getListWithReplyCount(pageRequestDTO));
 
     }
 

@@ -11,6 +11,7 @@ import org.ssong.diary.entity.QBoard;
 import org.ssong.diary.entity.QReply;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardSearch{
@@ -68,7 +69,7 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
     }
 
     @Override
-    public Page<Object[]> searchWithReplyCount() {
+    public Page<Object[]> searchWithReplyCount(char[] typeArr, String keyword,Pageable pageable) {
 
         QBoard qBoard = QBoard.board;
         QReply qReply = QReply.reply;
@@ -77,16 +78,46 @@ public class BoardSearchImpl extends QuerydslRepositorySupport implements BoardS
 
         query.leftJoin(qReply).on(qReply.board.eq(qBoard));
 
-        query.where(qBoard.bno.eq(200L));
+      //  query.where(qBoard.bno.eq(200L));
 
         query.groupBy(qBoard);
+
+        if(typeArr!=null && typeArr.length >0) {
+
+            BooleanBuilder condition = new BooleanBuilder();
+
+
+            for (char type : typeArr) {
+                if (type == 'T') {
+                    condition.or(qBoard.title.contains(keyword));
+                } else if (type == 'C') {
+                    condition.or(qBoard.content.contains(keyword));
+                } else if (type == 'W') {
+                    condition.or(qBoard.writer.contains(keyword));
+                }
+            }
+
+            query.where(condition);
+
+        }
+
+        query.where(qBoard.bno.gt(0L));
+
 
         JPQLQuery<Tuple> selectQuery = query.select(qBoard.bno, qBoard.title, qBoard.writer,
                 qBoard.regDate, qReply.count());
 
+        this.getQuerydsl().applyPagination(pageable, selectQuery);
+
+        List<Tuple> tupleList = selectQuery.fetch();
+
+        long totalCount = selectQuery.fetchCount();
+
         log.info(selectQuery);
 
+        List<Object[]> arr = tupleList.stream().map(tuple -> tuple.toArray()).collect(Collectors.toList());
 
-        return null;
+
+        return new PageImpl<>(arr, pageable, totalCount);
     }
 }
