@@ -30,6 +30,7 @@ public class ReplyServiceImpl implements ReplyService{
     public PageResponseDTO<ReplyDTO> getListOfBoard(Long bno, PageRequestDTO pageRequestDTO) {
 
         Pageable pageable = null;
+
         //pageRequestDTO안의 page값이 -1이라면, 우리가 test에서 만든 로직을 사용하여 값을 변경해줘야함.
         if(pageRequestDTO.getPage() == -1){
             int lastPage = calcLastPage(bno, pageRequestDTO.getSize()); // -1 : 댓글이 없는경우, 숫자 마지막 댓글 페이지
@@ -52,7 +53,6 @@ public class ReplyServiceImpl implements ReplyService{
 
         return new PageResponseDTO<>( pageRequestDTO, (int)result.getTotalElements(),dtoList);
     }
-
 
     private int calcLastPage(Long bno, double size) {//마지막 페이지 계산 메서드
 
