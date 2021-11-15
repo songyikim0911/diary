@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.ssong.diary.entity.Board;
 import org.ssong.diary.entity.Reply;
 
@@ -21,6 +25,19 @@ public class ReplyRepositoryTests {
     @Autowired
     private ReplyRepository replyRepository;
 
+
+    @Test
+    public void testListOfBoard(){
+
+        Pageable pageable =
+                PageRequest.of(0,10, Sort.by("rno").descending());
+
+        Page<Reply> result = replyRepository.getListByBno(197L, pageable);
+
+        log.info(result.getTotalElements());
+
+        result.get().forEach(reply->log.info(reply));
+    }
 
     @Test
     public void testRead(){
