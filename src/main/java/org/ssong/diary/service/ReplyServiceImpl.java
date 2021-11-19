@@ -54,6 +54,16 @@ public class ReplyServiceImpl implements ReplyService{
         return new PageResponseDTO<>( pageRequestDTO, (int)result.getTotalElements(),dtoList);
     }
 
+    @Override
+    public Long register(ReplyDTO replyDTO) {
+
+        Reply reply = modelMapper.map(replyDTO, Reply.class);
+
+        replyRepository.save(reply);
+
+        return reply.getRno();
+    }
+
     private int calcLastPage(Long bno, double size) {//마지막 페이지 계산 메서드
 
         int count = replyRepository.getReplyCountOfBoard(bno);

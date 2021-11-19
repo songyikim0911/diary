@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.ssong.diary.dto.PageRequestDTO;
 import org.ssong.diary.dto.PageResponseDTO;
 import org.ssong.diary.dto.ReplyDTO;
@@ -27,6 +24,24 @@ public class ReplyController {
         return replyService.getListOfBoard(bno, pageRequestDTO);
 
     }
+
+    @GetMapping("/register")
+    public void registerGet(){
+
+    }
+
+    @PostMapping("")
+    public PageResponseDTO<ReplyDTO> registerPost(@RequestBody ReplyDTO replyDTO){
+
+        replyService.register(replyDTO);
+
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(-1).build();
+
+        return replyService.getListOfBoard(replyDTO.getBno(), pageRequestDTO);
+
+    }
+
+
 
 
 }
